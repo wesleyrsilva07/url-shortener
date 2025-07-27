@@ -1,9 +1,11 @@
 import { AuthType } from '../dtos/auth.type';
-import { AuthService } from '../usecases/auth.usecase';
+import { AuthUseCase } from '../usecases/auth.usecase';
 import { AuthInput } from '../dtos/auth.input';
+import { Controller } from '@nestjs/common';
 
-export class AuthResolver {
-  constructor(private authService: AuthService) {}
+@Controller()
+export class AuthController {
+  constructor(private authService: AuthUseCase) {}
 
   public async login(data: AuthInput): Promise<AuthType> {
     const response = await this.authService.validateUser(data);

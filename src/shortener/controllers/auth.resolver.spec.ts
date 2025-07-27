@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthResolver } from './auth.controller';
-describe('AuthResolver', () => {
-  let resolver: AuthResolver;
+import { AuthController } from './auth.controller';
+describe('AuthController', () => {
+  let controller: AuthController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthResolver]
+      providers: [AuthController]
     }).compile();
 
-    resolver = module.get<AuthResolver>(AuthResolver);
+    controller = module.get<AuthController>(AuthController);
   });
 
   it('should be defined', () => {
-    expect(resolver).toBeDefined();
+    expect(controller).toBeDefined();
   });
 });

@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AppService } from './app.service';
-import { URLShortener } from './shortener/controllers/shortener.controller';
+import { ControllerModule } from './shortener/controllers/controller.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import configDatabase from './shortener/database-config';
 
 @Module({
-  imports: [],
-  controllers: [URLShortener],
+  imports: [TypeOrmModule.forRoot(configDatabase), ControllerModule],
   providers: [AppService]
 })
 export class AppModule {}

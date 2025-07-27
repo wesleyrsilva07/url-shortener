@@ -57,8 +57,11 @@ export class UserUseCase {
   }
 
   async createUser(data: CreateUserInput): Promise<User> {
-    const user = this.userRepository.create(data);
-    const userSaved = await this.userRepository.save(data);
+    const user = this.userRepository.create({
+      ...data,
+      password_hash: data.password
+    });
+    const userSaved = await this.userRepository.save(user);
 
     if (!userSaved) {
       throw new InternalServerErrorException('Problema ao criar usuário.');

@@ -3,12 +3,12 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthInput } from '../dtos/auth.input';
 import { AuthType } from '../dtos/auth.type';
 import * as bcrypt from 'bcrypt';
-import { jwtConstants } from '../controllers/auth/constants';
+import { jwtConstants } from '../shared/constants';
 import { User } from '../entities/user.entity';
 import { UserUseCase } from './user.usecase';
 
 @Injectable()
-export class AuthService {
+export class AuthUseCase {
   constructor(
     private userService: UserUseCase,
     private jwtService: JwtService
