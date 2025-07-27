@@ -1,0 +1,31 @@
+{
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.formatOnSave": true,
+  "files.eol": "\r\n",
+  "prettier.endOfLine": "crlf",
+
+  "git.mergeEditor": true,
+  //Oculta a pasta para não aparecer na importação automática
+  "files.exclude": {
+    "**/dist": true
+  },
+  "search.exclude": {
+    "**/dist": true
+  },
+  "typescript.preferences.autoImportFileExcludePatterns": ["**/dist/**"],
+
+  //Prettier
+  "prettier.configPath": ".prettierrc",
+
+  //eslint
+  "eslint.nodePath": "eslint.config.mjs",
+
+  "jest.jestCommandLine": "npx jest --config ./test/jest.unit.ts",
+  "jestrunner.jestCommand": "npx jest --config ./test/jest.unit.ts",
+  "jest.runMode": {
+    "type": "on-demand"
+  }
+}
+
