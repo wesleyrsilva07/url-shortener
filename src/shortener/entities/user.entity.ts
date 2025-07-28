@@ -8,6 +8,7 @@ import {
   OneToMany
 } from 'typeorm';
 import { ShortUrl } from './short-url.entity';
+import { hashPasswordTransform } from '../shared/crypto';
 
 @Entity('users')
 export class User {
@@ -20,7 +21,9 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column('varchar', {
+    transformer: hashPasswordTransform
+  })
   password_hash: string;
 
   @CreateDateColumn()

@@ -1,16 +1,23 @@
 import { AuthType } from '../dtos/auth.type';
 import { AuthUseCase } from '../usecases/auth.usecase';
 import { AuthInput } from '../dtos/auth.input';
-import { Controller } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
+import { ApiOperation, ApiBody } from '@nestjs/swagger';
 
-@Controller()
+@Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthUseCase) {}
+  constructor(private authUseCase: AuthUseCase) {}
 
-  public async login(data: AuthInput): Promise<AuthType> {
-    const response = await this.authService.validateUser(data);
+  @ApiOperation({
+    summary:
+      'Devolve um bearer token quando o usuário passa as credenciais corretas.'
+  })
+  @ApiBody({ type: AuthInput })
+  @Post()
+  async login(@Body() data: AuthInput): Promise<AuthType> {
+    const response = await this.authUseCase.validateUser(data);
     return {
-      user: response.user,
+      userEmail: response.userEmail,
       token: response.token
     };
   }

@@ -25,7 +25,6 @@ import { UserUseCase } from '../usecases/user.usecase';
 @ApiTags('users')
 @Controller('users')
 export class UserController {
-  private readonly logger = new Logger(UserController.name);
   constructor(private userUseCase: UserUseCase) {}
 
   @Get()
@@ -37,7 +36,6 @@ export class UserController {
   })
   @HttpCode(HttpStatus.OK)
   async users(): Promise<User[]> {
-    this.logger.log('GET /users chamado');
     return await this.userUseCase.findAllUsers();
   }
 
@@ -48,7 +46,6 @@ export class UserController {
   @ApiResponse({ status: 404, description: 'Usuário não encontrado.' })
   @HttpCode(HttpStatus.OK)
   async user(@Param('id') id: string): Promise<User> {
-    this.logger.log(`GET /users/${id} chamado`);
     return await this.userUseCase.findUserById(id);
   }
 
@@ -59,7 +56,6 @@ export class UserController {
   @ApiResponse({ status: 404, description: 'Usuário não encontrado.' })
   @HttpCode(HttpStatus.OK)
   async userByEmail(@Param('email') email: string): Promise<User> {
-    this.logger.log(`GET /users/email/${email} chamado`);
     return await this.userUseCase.findUserByEmail(email);
   }
 
@@ -74,9 +70,6 @@ export class UserController {
   @ApiResponse({ status: 400, description: 'Dados inválidos.' })
   @HttpCode(HttpStatus.CREATED)
   async createUser(@Body() data: CreateUserInput): Promise<User> {
-    console.log('teste');
-
-    this.logger.log(`POST /users chamado com body: ${JSON.stringify(data)}`);
     return await this.userUseCase.createUser(data);
   }
 
@@ -95,9 +88,6 @@ export class UserController {
     @Param('id') id: string,
     @Body() data: UpdateUserInput
   ): Promise<User> {
-    this.logger.log(
-      `PUT /users/${id} chamado com body: ${JSON.stringify(data)}`
-    );
     return await this.userUseCase.updateUser(id, data);
   }
 
@@ -112,7 +102,6 @@ export class UserController {
   @ApiResponse({ status: 404, description: 'Usuário não encontrado.' })
   @HttpCode(HttpStatus.OK)
   async deleteUser(@Param('id') id: string): Promise<boolean> {
-    this.logger.log(`DELETE /users/${id} chamado`);
     return await this.userUseCase.deleteUser(id);
   }
 }

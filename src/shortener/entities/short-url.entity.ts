@@ -23,8 +23,8 @@ export class ShortUrl {
   @Column({ type: 'int', default: 0 })
   clicks: number;
 
-  @ManyToOne(() => User, user => user.urls)
-  user: User;
+  @ManyToOne(() => User, user => user.urls, { nullable: true })
+  user?: User;
 
   @CreateDateColumn()
   created_at: Date;

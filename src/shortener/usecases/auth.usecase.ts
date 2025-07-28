@@ -24,7 +24,7 @@ export class AuthUseCase {
 
     const token = await this.jwtToken(user);
     return {
-      user,
+      userEmail: user.email,
       token
     };
   }
