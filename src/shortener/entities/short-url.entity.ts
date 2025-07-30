@@ -17,14 +17,14 @@ export class ShortUrl {
   @Column({ type: 'text' })
   original_url: string;
 
-  @Column({ length: 10, unique: true })
+  @Column({ length: 6, unique: true })
   short_code: string;
 
   @Column({ type: 'int', default: 0 })
   clicks: number;
 
-  @ManyToOne(() => User, user => user.urls)
-  user: User;
+  @ManyToOne(() => User, user => user.urls, { nullable: true })
+  user?: User;
 
   @CreateDateColumn()
   created_at: Date;

@@ -1,13 +1,7 @@
-import {
-  IsString,
-  IsNotEmpty,
-  IsEmail,
-  IsBoolean,
-  MaxLength
-} from 'class-validator';
+import { IsString, IsNotEmpty, IsEmail, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateUserInput {
+export class CreateUserOutput {
   @ApiProperty({ example: 'João Silva', maxLength: 150 })
   @IsString()
   @IsNotEmpty({ message: 'O campo Nome é obrigatório.' })
@@ -18,9 +12,4 @@ export class CreateUserInput {
   @IsEmail()
   @IsNotEmpty({ message: 'O campo E-mail é obrigatório.' })
   email: string;
-
-  @ApiProperty({ example: 'senha123' })
-  @IsString()
-  @IsNotEmpty({ message: 'A senha não foi preenchida.' })
-  password: string;
 }
