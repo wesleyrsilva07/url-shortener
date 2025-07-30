@@ -3,7 +3,7 @@ import { ShortUrl } from '../../entities/short-url.entity';
 
 export interface IShortUrlRepository {
   createShortUrl(data: Partial<ShortUrl>): Promise<ShortUrl>;
-  findByUserId(userId: string): Promise<ShortUrlSummaryDto[]>;
+  findByUserId(userId: string, shortUrl: string): Promise<ShortUrlSummaryDto[]>;
   softDeleteById(id: string, userId: string): Promise<boolean>;
   updateSourceUrl(
     id: string,

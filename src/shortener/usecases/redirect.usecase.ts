@@ -1,10 +1,11 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { IShortUrlRepository } from '../repositories/interfaces/Ishort-url.repository';
+import { RepositoryName } from '../shared/enums/repositories-name';
 
 @Injectable()
 export class RedirectUseCase {
   constructor(
-    @Inject('IShortUrlRepository')
+    @Inject(RepositoryName.ShortUrl)
     private readonly shortUrlRepo: IShortUrlRepository
   ) {}
 

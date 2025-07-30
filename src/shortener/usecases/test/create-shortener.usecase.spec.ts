@@ -1,8 +1,10 @@
 import { Test } from '@nestjs/testing';
 import { CreateShortUrlUseCase } from '../create-shortener.usecase';
-import { IShortUrlRepository } from 'src/shortener/repositories/interfaces/Ishort-url.repository';
+import { IShortUrlRepository } from '../../repositories/interfaces/Ishort-url.repository';
 import { UserUseCase } from '../user.usecase';
 import { ShortUrlBuilder } from './builders/short-url.builder';
+import { RepositoryName } from '../../shared/enums/repositories-name';
+import { ShortUrlSummaryBuilder } from './builders/short-url-summary.builder';
 
 describe('CreateShortUrlUseCase', () => {
   let usecase: CreateShortUrlUseCase;
@@ -14,7 +16,7 @@ describe('CreateShortUrlUseCase', () => {
       providers: [
         CreateShortUrlUseCase,
         {
-          provide: 'IShortUrlRepository',
+          provide: RepositoryName.ShortUrl,
           useValue: {
             createShortUrl: jest.fn(),
             findByUserId: jest.fn(),
@@ -32,7 +34,7 @@ describe('CreateShortUrlUseCase', () => {
       ]
     }).compile();
     usecase = moduleRef.get<CreateShortUrlUseCase>(CreateShortUrlUseCase);
-    repo = moduleRef.get<IShortUrlRepository>('IShortUrlRepository');
+    repo = moduleRef.get<IShortUrlRepository>(RepositoryName.ShortUrl);
     userUseCase = moduleRef.get<UserUseCase>(UserUseCase);
   });
 
@@ -89,11 +91,17 @@ describe('CreateShortUrlUseCase', () => {
   });
 
   it('should find by user id', async () => {
-    const urls = [ShortUrlBuilder.aShortUrl().build()];
+    const urls = [ShortUrlSummaryBuilder.aShortUrlSummary().build()];
     jest.spyOn(repo, 'findByUserId').mockResolvedValue(urls);
-    const result = await usecase.findByUserId('user-id');
+    const result = await usecase.findByUserId(
+      'user-id',
+      'http://localhost:3010'
+    );
     expect(result).toBe(urls);
-    expect(repo.findByUserId).toHaveBeenCalledWith('user-id');
+    expect(repo.findByUserId).toHaveBeenCalledWith(
+      'user-id',
+      'http://localhost:3010'
+    );
   });
 
   it('should soft delete by id', async () => {

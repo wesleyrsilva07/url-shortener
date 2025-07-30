@@ -8,11 +8,12 @@ import { User } from '../entities/user.entity';
 import { IUserRepository } from '../repositories/interfaces/Iuser.repository';
 import { UpdateUserInput } from '../dtos/update-user.input';
 import { CreateUserInput } from '../dtos/create-user.input';
+import { RepositoryName } from '../shared/enums/repositories-name';
 
 @Injectable()
 export class UserUseCase {
   constructor(
-    @Inject('IUserRepository')
+    @Inject(RepositoryName.User)
     private readonly userRepository: IUserRepository
   ) {}
 

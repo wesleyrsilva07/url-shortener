@@ -51,7 +51,7 @@ describe('UserController', () => {
       .build();
     jest.spyOn(userUseCase, 'createUser').mockResolvedValue(user);
     const result = await controller.createUser(input as any);
-    expect(result).toBe(user);
+    expect(result).toEqual({ name: 'User', email: 'a@a.com' });
     expect(userUseCase.createUser).toHaveBeenCalledWith(input);
   });
 

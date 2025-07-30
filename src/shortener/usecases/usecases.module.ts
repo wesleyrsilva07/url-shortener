@@ -9,8 +9,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../shared/constants';
 import { JwtStrategy } from '../guards/jwt.strategy';
 import { TypeOrmUserRepository } from '../repositories/user.respository';
-import { TypeOrmShortUrlRepository } from '../repositories/shorturl.repository';
+import { TypeOrmShortUrlRepository } from '../repositories/short-url.repository';
 import { RedirectUseCase } from './redirect.usecase';
+import { RepositoryName } from '../shared/enums/repositories-name';
 
 @Module({
   imports: [
@@ -26,11 +27,11 @@ import { RedirectUseCase } from './redirect.usecase';
     JwtStrategy,
     RedirectUseCase,
     {
-      provide: 'IUserRepository',
+      provide: RepositoryName.User,
       useClass: TypeOrmUserRepository
     },
     {
-      provide: 'IShortUrlRepository',
+      provide: RepositoryName.ShortUrl,
       useClass: TypeOrmShortUrlRepository
     }
   ],

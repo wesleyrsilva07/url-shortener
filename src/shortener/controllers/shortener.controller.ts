@@ -3,7 +3,7 @@ import {
   Controller,
   Get,
   Post,
-  Put,
+  Patch,
   Delete,
   Req,
   UseGuards,
@@ -56,7 +56,14 @@ export class URLShortener {
   })
   @UseGuards(OptionalJwtAuthGuard)
   async listShortenedUrls(@Req() req): Promise<ShortUrlSummaryDto[]> {
-    return await this.createShortenerUseCase.findByUserId(req.user.id);
+    const tempShortCode = this.createShortenerUseCase.generateShortCode();
+    const protocol = req.protocol;
+    const host = req.get('host');
+    const shortUrl = `${protocol}://${host}/${tempShortCode}`;
+    return await this.createShortenerUseCase.findByUserId(
+      req.user.id,
+      shortUrl
+    );
   }
 
   @Delete(':id')
@@ -67,7 +74,7 @@ export class URLShortener {
     return this.createShortenerUseCase.softDeleteById(id, req.user.id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Atualiza a URL de origem' })
   @UseGuards(OptionalJwtAuthGuard)

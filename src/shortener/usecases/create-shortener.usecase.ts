@@ -3,12 +3,13 @@ import { ShortUrl } from '../entities/short-url.entity';
 import { UserUseCase } from './user.usecase';
 import { Inject, Injectable } from '@nestjs/common';
 import { IShortUrlRepository } from '../repositories/interfaces/Ishort-url.repository';
+import { RepositoryName } from '../shared/enums/repositories-name';
 import { ShortUrlSummaryDto } from '../dtos/short-url-summary.dto';
 
 @Injectable()
 export class CreateShortUrlUseCase {
   constructor(
-    @Inject('IShortUrlRepository')
+    @Inject(RepositoryName.ShortUrl)
     private shortenerRepository: IShortUrlRepository,
     private userUseCase: UserUseCase
   ) {}
@@ -33,8 +34,11 @@ export class CreateShortUrlUseCase {
     return crypto.randomUUID().slice(0, 6);
   }
 
-  async findByUserId(userId: string): Promise<ShortUrlSummaryDto[]> {
-    return this.shortenerRepository.findByUserId(userId);
+  async findByUserId(
+    userId: string,
+    shortUrl: string
+  ): Promise<ShortUrlSummaryDto[]> {
+    return this.shortenerRepository.findByUserId(userId, shortUrl);
   }
   async softDeleteById(id: string, userId: string): Promise<boolean> {
     return this.shortenerRepository.softDeleteById(id, userId);

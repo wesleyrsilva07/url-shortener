@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { TypeOrmShortUrlRepository } from '../shorturl.repository';
+import { TypeOrmShortUrlRepository } from '../short-url.repository';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ShortUrl } from '../../entities/short-url.entity';
 
@@ -37,11 +37,18 @@ describe('TypeOrmShortUrlRepository', () => {
   });
 
   it('should find by user id', async () => {
-    ormRepo.find.mockResolvedValue(['shorturl']);
-    const result = await repo.findByUserId('user-id');
-    expect(result).toEqual(['shorturl']);
+    // O repo agora retorna objetos com short_code e clicks
+    ormRepo.find.mockResolvedValue([{ short_code: 'abc123', clicks: 5 }]);
+    const result = await repo.findByUserId(
+      'user-id',
+      'http://localhost:3010/abc123'
+    );
+    expect(result).toEqual([
+      { short_url: 'http://localhost:3010/abc123', clicks: 5 }
+    ]);
     expect(ormRepo.find).toHaveBeenCalledWith({
-      where: { user: { id: 'user-id' } }
+      where: { user: { id: 'user-id' } },
+      select: ['short_code', 'clicks']
     });
   });
 

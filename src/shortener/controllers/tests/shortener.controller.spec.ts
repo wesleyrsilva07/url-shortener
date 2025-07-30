@@ -2,6 +2,7 @@ import { Test } from '@nestjs/testing';
 import { URLShortener } from '../shortener.controller';
 import { CreateShortUrlUseCase } from '../../usecases/create-shortener.usecase';
 import { ShortUrlBuilder } from '../../usecases/test/builders/short-url.builder';
+import { ShortUrlSummaryBuilder } from '../../usecases/test/builders/short-url-summary.builder';
 
 describe('URLShortener', () => {
   let controller: URLShortener;
@@ -48,10 +49,20 @@ describe('URLShortener', () => {
 
   it('should list shortened urls', async () => {
     const req: any = { user: { id: 'user-id' } };
-    const urls = [ShortUrlBuilder.aShortUrl().build()];
+    const urls = [ShortUrlSummaryBuilder.aShortUrlSummary().build()];
     jest.spyOn(usecase, 'findByUserId').mockResolvedValue(urls);
+    // Simula o shortUrl gerado pelo controller
+    jest.spyOn(usecase, 'generateShortCode').mockReturnValue('abc123');
+    const protocol = 'http';
+    const host = 'localhost:3010';
+    req.protocol = protocol;
+    req.get = () => host;
+    const expectedShortUrl = `${protocol}://${host}/abc123`;
     const result = await controller.listShortenedUrls(req);
     expect(result).toBe(urls);
-    expect(usecase.findByUserId).toHaveBeenCalledWith('user-id');
+    expect(usecase.findByUserId).toHaveBeenCalledWith(
+      'user-id',
+      expectedShortUrl
+    );
   });
 });

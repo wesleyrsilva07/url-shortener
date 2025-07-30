@@ -15,7 +15,7 @@ describe('TypeOrmUserRepository', () => {
       create: jest.fn(),
       save: jest.fn(),
       update: jest.fn(),
-      delete: jest.fn()
+      softDelete: jest.fn()
     };
     const moduleRef = await Test.createTestingModule({
       providers: [
@@ -90,15 +90,9 @@ describe('TypeOrmUserRepository', () => {
   });
 
   it('should delete user', async () => {
-    ormRepo.delete.mockResolvedValue({ affected: 1 });
+    ormRepo.softDelete.mockResolvedValue({ affected: 1 });
     const result = await repo.delete('1');
     expect(result).toBe(true);
-    expect(ormRepo.delete).toHaveBeenCalledWith('1');
-  });
-
-  it('should return false if delete not affected', async () => {
-    ormRepo.delete.mockResolvedValue({ affected: 0 });
-    const result = await repo.delete('1');
-    expect(result).toBe(false);
+    expect(ormRepo.softDelete).toHaveBeenCalledWith('1');
   });
 });

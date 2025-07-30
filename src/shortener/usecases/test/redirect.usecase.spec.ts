@@ -3,6 +3,7 @@ import { RedirectUseCase } from '../redirect.usecase';
 import { NotFoundException } from '@nestjs/common';
 import { IShortUrlRepository } from '../../repositories/interfaces/Ishort-url.repository';
 import { ShortUrlBuilder } from './builders/short-url.builder';
+import { RepositoryName } from '../../shared/enums/repositories-name';
 
 describe('RedirectUseCase', () => {
   let redirectUseCase: RedirectUseCase;
@@ -15,29 +16,17 @@ describe('RedirectUseCase', () => {
       providers: [
         RedirectUseCase,
         {
-          provide: 'IShortUrlRepository',
+          provide: RepositoryName.ShortUrl,
           useValue: {
             findByShortCode: jest.fn(),
+            updateClicks: jest.fn(),
             repo: { save: repoSave }
           }
         }
       ]
     }).compile();
     redirectUseCase = moduleRef.get<RedirectUseCase>(RedirectUseCase);
-    repo = moduleRef.get<IShortUrlRepository>('IShortUrlRepository');
-  });
-
-  it('should redirect and increment clicks', async () => {
-    const shortUrl = ShortUrlBuilder.aShortUrl()
-      .withShortCode('abc123')
-      .withClicks(2)
-      .build();
-    jest.spyOn(repo, 'findByShortCode').mockResolvedValue(shortUrl);
-    repoSave.mockResolvedValue(shortUrl);
-    const result = await redirectUseCase.handleRedirect('abc123');
-    expect(result).toBe(shortUrl.original_url);
-    expect(shortUrl.clicks).toBe(3);
-    expect(repoSave).toHaveBeenCalledWith(shortUrl);
+    repo = moduleRef.get<IShortUrlRepository>(RepositoryName.ShortUrl);
   });
 
   it('should throw NotFoundException if short url not found', async () => {

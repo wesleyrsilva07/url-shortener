@@ -17,16 +17,17 @@ export class TypeOrmShortUrlRepository implements IShortUrlRepository {
     return this.repo.save(entity);
   }
 
-  async findByUserId(userId: string): Promise<ShortUrlSummaryDto[]> {
+  async findByUserId(
+    userId: string,
+    shortUrl: string
+  ): Promise<ShortUrlSummaryDto[]> {
     const urls = await this.repo.find({
       where: { user: { id: userId } },
       select: ['short_code', 'clicks']
     });
 
-    const domain = process.env.DOMAIN_URL;
-
     return urls.map(u => ({
-      short_url: `${domain}/${u.short_code}`,
+      short_url: shortUrl,
       clicks: u.clicks
     }));
   }

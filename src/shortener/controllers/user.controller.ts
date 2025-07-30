@@ -2,7 +2,7 @@ import {
   Controller,
   Get,
   Post,
-  Put,
+  Patch,
   Delete,
   Param,
   Body,
@@ -82,8 +82,8 @@ export class UserController {
   }
 
   @ApiBearerAuth('JWT-auth')
-  @Put(':id')
-  @ApiOperation({ summary: 'Atualiza um usuário' })
+  @Patch(':id')
+  @ApiOperation({ summary: 'Atualiza parcialmente um usuário' })
   @ApiParam({ name: 'id', type: String })
   @ApiBody({ type: UpdateUserInput })
   @ApiResponse({
