@@ -1,43 +1,27 @@
 import {
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
+import { IUserRepository } from '../repositories/interfaces/Iuser.repository';
 import { UpdateUserInput } from '../dtos/update-user.input';
 import { CreateUserInput } from '../dtos/create-user.input';
 
 @Injectable()
 export class UserUseCase {
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>
+    @Inject('IUserRepository')
+    private readonly userRepository: IUserRepository
   ) {}
 
   async findAllUsers(): Promise<User[]> {
-    const users = await this.userRepository.find();
-    return users;
+    return this.userRepository.findAll();
   }
 
   async findUserByEmail(email: string): Promise<User> {
-    const user = await this.userRepository.findOne({
-      where: {
-        email
-      }
-    });
-    if (!user) {
-      throw new NotFoundException('Usuário não encontrado.');
-    }
-    return user;
-  }
-  async findUserByName(name: string): Promise<User> {
-    const user = await this.userRepository.findOne({
-      where: {
-        name
-      }
-    });
+    const user = await this.userRepository.findByEmail(email);
     if (!user) {
       throw new NotFoundException('Usuário não encontrado.');
     }
@@ -45,11 +29,7 @@ export class UserUseCase {
   }
 
   async findUserById(id: string): Promise<User> {
-    const user = await this.userRepository.findOne({
-      where: {
-        id
-      }
-    });
+    const user = await this.userRepository.findById(id);
     if (!user) {
       throw new NotFoundException('Usuário não encontrado.');
     }
@@ -57,35 +37,25 @@ export class UserUseCase {
   }
 
   async createUser(data: CreateUserInput): Promise<User> {
-    const user = this.userRepository.create({
+    const user = await this.userRepository.create({
       ...data,
       password_hash: data.password
     });
-    const userSaved = await this.userRepository.save(user);
-
-    if (!userSaved) {
+    if (!user) {
       throw new InternalServerErrorException('Problema ao criar usuário.');
     }
-    return userSaved;
+    return user;
   }
 
   async updateUser(id: string, data: UpdateUserInput): Promise<User> {
-    const user = await this.findUserById(id);
-    if (!user) {
-      throw new Error('User not found');
+    const updatedUser = await this.userRepository.update(id, data);
+    if (!updatedUser) {
+      throw new NotFoundException('Usuário não encontrado.');
     }
-    await this.userRepository.update(id, data);
-    const updatedUser = await this.findUserById(id);
-
     return updatedUser;
   }
 
   async deleteUser(id: string): Promise<boolean> {
-    const deleted = await this.userRepository.delete(id);
-
-    if (deleted) {
-      return true;
-    }
-    return false;
+    return this.userRepository.delete(id);
   }
 }

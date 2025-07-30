@@ -23,10 +23,4 @@ export class CreateUserInput {
   @IsString()
   @IsNotEmpty({ message: 'A senha não foi preenchida.' })
   password: string;
-
-  // Descomente se quiser usar account_type
-  // @ApiProperty({ example: 'admin' })
-  // @IsString()
-  // @IsNotEmpty()
-  // account_type: string;
 }

@@ -5,6 +5,7 @@ import { AuthController } from './auth.controller';
 import { UserController } from './user.controller';
 import { URLShortener } from './shortener.controller';
 import { UsecasesModule } from '../usecases/usecases.module';
+import { RedirectController } from './redirect.controller';
 
 @Module({
   imports: [
@@ -13,6 +14,11 @@ import { UsecasesModule } from '../usecases/usecases.module';
     }),
     UsecasesModule
   ],
-  controllers: [AuthController, UserController, URLShortener]
+  controllers: [
+    AuthController,
+    UserController,
+    URLShortener,
+    RedirectController
+  ]
 })
 export class ControllerModule {}

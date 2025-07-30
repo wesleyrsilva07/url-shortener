@@ -8,6 +8,9 @@ import { AuthUseCase } from './auth.usecase';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../shared/constants';
 import { JwtStrategy } from '../guards/jwt.strategy';
+import { TypeOrmUserRepository } from '../repositories/user.respository';
+import { TypeOrmShortUrlRepository } from '../repositories/shorturl.repository';
+import { RedirectUseCase } from './redirect.usecase';
 
 @Module({
   imports: [
@@ -16,7 +19,21 @@ import { JwtStrategy } from '../guards/jwt.strategy';
       secret: jwtConstants.secret
     })
   ],
-  providers: [UserUseCase, CreateShortUrlUseCase, AuthUseCase, JwtStrategy],
-  exports: [UserUseCase, CreateShortUrlUseCase, AuthUseCase]
+  providers: [
+    UserUseCase,
+    CreateShortUrlUseCase,
+    AuthUseCase,
+    JwtStrategy,
+    RedirectUseCase,
+    {
+      provide: 'IUserRepository',
+      useClass: TypeOrmUserRepository
+    },
+    {
+      provide: 'IShortUrlRepository',
+      useClass: TypeOrmShortUrlRepository
+    }
+  ],
+  exports: [UserUseCase, CreateShortUrlUseCase, AuthUseCase, RedirectUseCase]
 })
 export class UsecasesModule {}

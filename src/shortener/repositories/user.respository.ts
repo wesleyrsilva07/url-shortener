@@ -23,6 +23,10 @@ export class TypeOrmUserRepository implements IUserRepository {
     return this.repo.findOne({ where: { id } });
   }
 
+  findByName(name: string) {
+    return this.repo.findOne({ where: { name } });
+  }
+
   async create(user: Partial<User>) {
     const entity = this.repo.create(user);
     return this.repo.save(entity);

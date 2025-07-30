@@ -15,6 +15,7 @@ import { CreateShortUrlUseCase } from '../usecases/create-shortener.usecase';
 import { ShortUrl } from '../entities/short-url.entity';
 import { ShortenUrlInputDto } from '../dtos/shorten-url-input.dto';
 import { OptionalJwtAuthGuard } from '../guards/optional-jwt-auth.guard';
+import { UrlErrorMessages } from '../errors/url-error-messages.enum';
 @Controller()
 export class URLShortener {
   constructor(private readonly createShortenerUseCase: CreateShortUrlUseCase) {}
@@ -32,12 +33,19 @@ export class URLShortener {
   ): Promise<ShortenUrlResponseDto> {
     const userId = req.user?.id || null;
 
+    // Gera short_code
+    const tempShortCode = this.createShortenerUseCase.generateShortCode();
+    const protocol = req.protocol;
+    const host = req.get('host');
+    const shortUrl = `${protocol}://${host}/${tempShortCode}`;
+
     const shortUrlEntity: ShortUrl = await this.createShortenerUseCase.execute({
       originalUrl: body.url,
-      userId
+      userId,
+      shortUrl
     });
 
-    return { shortenUrl: shortUrlEntity.short_code };
+    return { shortenUrl: shortUrl };
   }
 
   @Get()
@@ -47,11 +55,6 @@ export class URLShortener {
   })
   @UseGuards(OptionalJwtAuthGuard)
   async listShortenedUrls(@Req() req): Promise<Omit<ShortUrl, 'user'>[]> {
-    if (!req.user) {
-      throw new UnauthorizedException(
-        'Apenas usuários autenticados podem listar suas URLs encurtadas.'
-      );
-    }
     return await this.createShortenerUseCase.findByUserId(req.user.id);
   }
 
@@ -60,11 +63,6 @@ export class URLShortener {
   @ApiOperation({ summary: 'Deleta uma URL encurtada' })
   @UseGuards(OptionalJwtAuthGuard)
   async deleteUrl(@Req() req, @Param('id') id: string): Promise<boolean> {
-    if (!req.user) {
-      throw new UnauthorizedException(
-        'Apenas usuários autenticados podem deletar URLs.'
-      );
-    }
     return this.createShortenerUseCase.softDeleteById(id, req.user.id);
   }
 
@@ -77,21 +75,13 @@ export class URLShortener {
     @Param('id') id: string,
     @Body('newUrlSource') newUrlSource: string
   ): Promise<boolean> {
-    if (!req.user) {
-      throw new UnauthorizedException(
-        'Apenas usuários autenticados podem atualizar URLs.'
-      );
-    }
-
     const result = await this.createShortenerUseCase.updateSourceUrl(
       id,
       req.user.id,
       newUrlSource
     );
     if (!result) {
-      throw new UnauthorizedException(
-        'Não foi possível atualizar a URL. Verifique se a URL existe e se você tem permissão para atualizá-la.'
-      );
+      throw new UnauthorizedException(UrlErrorMessages.UPDATE_FAILED);
     }
     return result;
   }

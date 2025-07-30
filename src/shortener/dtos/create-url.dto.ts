@@ -7,5 +7,8 @@ export class CreateUrlDto {
 
   @IsString()
   @IsNotEmpty()
-  userId: string; // ID do usuário que está criando o short URL
+  userId: string;
+
+  @IsString()
+  shortUrl?: string;
 }
