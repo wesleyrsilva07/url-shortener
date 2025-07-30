@@ -6,7 +6,6 @@ export class ShortUrlBuilder {
     id: 'short-id',
     original_url: 'https://original.com',
     short_code: 'abc123',
-    short_url: 'https://short.com/abc123',
     clicks: 0,
     created_at: new Date(),
     updated_at: new Date(),
@@ -29,11 +28,6 @@ export class ShortUrlBuilder {
 
   withShortCode(code: string): ShortUrlBuilder {
     this.shortUrl.short_code = code;
-    return this;
-  }
-
-  withShortUrl(url: string): ShortUrlBuilder {
-    this.shortUrl.short_url = url;
     return this;
   }
 

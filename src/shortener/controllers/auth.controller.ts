@@ -1,4 +1,4 @@
-import { AuthType } from '../dtos/auth.type';
+import { AuthType } from '../dtos/auth.output';
 import { AuthUseCase } from '../usecases/auth.usecase';
 import { AuthInput } from '../dtos/auth.input';
 import { Controller, Post, Body } from '@nestjs/common';

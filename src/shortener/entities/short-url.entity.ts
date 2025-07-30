@@ -17,11 +17,8 @@ export class ShortUrl {
   @Column({ type: 'text' })
   original_url: string;
 
-  @Column({ length: 10, unique: true })
+  @Column({ length: 6, unique: true })
   short_code: string;
-
-  @Column({ type: 'text', nullable: true })
-  short_url?: string;
 
   @Column({ type: 'int', default: 0 })
   clicks: number;

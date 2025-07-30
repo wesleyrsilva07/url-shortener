@@ -15,10 +15,10 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column('varchar', { length: 100 })
   name: string;
 
-  @Column({ unique: true })
+  @Column('varchar', { length: 100, unique: true })
   email: string;
 
   @Column('varchar', {

@@ -7,19 +7,20 @@ import {
   Param,
   Body,
   HttpCode,
-  HttpStatus,
-  Logger
+  HttpStatus
 } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
   ApiResponse,
   ApiParam,
-  ApiBody
+  ApiBody,
+  ApiBearerAuth
 } from '@nestjs/swagger';
 import { CreateUserInput } from '../dtos/create-user.input';
 import { UpdateUserInput } from '../dtos/update-user.input';
 import { User } from '../entities/user.entity';
+import { CreateUserOutput } from '../dtos/create-user.output';
 import { UserUseCase } from '../usecases/user.usecase';
 
 @ApiTags('users')
@@ -27,6 +28,7 @@ import { UserUseCase } from '../usecases/user.usecase';
 export class UserController {
   constructor(private userUseCase: UserUseCase) {}
 
+  @ApiBearerAuth('JWT-auth')
   @Get()
   @ApiOperation({ summary: 'Lista todos os usuários' })
   @ApiResponse({
@@ -39,6 +41,7 @@ export class UserController {
     return await this.userUseCase.findAllUsers();
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Get(':id')
   @ApiOperation({ summary: 'Busca usuário por ID' })
   @ApiParam({ name: 'id', type: String })
@@ -49,6 +52,7 @@ export class UserController {
     return await this.userUseCase.findUserById(id);
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Get('email/:email')
   @ApiOperation({ summary: 'Busca usuário por email' })
   @ApiParam({ name: 'email', type: String })
@@ -65,14 +69,19 @@ export class UserController {
   @ApiResponse({
     status: 201,
     description: 'Usuário criado com sucesso.',
-    type: User
+    type: CreateUserOutput
   })
   @ApiResponse({ status: 400, description: 'Dados inválidos.' })
   @HttpCode(HttpStatus.CREATED)
-  async createUser(@Body() data: CreateUserInput): Promise<User> {
-    return await this.userUseCase.createUser(data);
+  async createUser(@Body() data: CreateUserInput): Promise<CreateUserOutput> {
+    const user = await this.userUseCase.createUser(data);
+    return {
+      name: user.name,
+      email: user.email
+    };
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Put(':id')
   @ApiOperation({ summary: 'Atualiza um usuário' })
   @ApiParam({ name: 'id', type: String })
@@ -91,6 +100,7 @@ export class UserController {
     return await this.userUseCase.updateUser(id, data);
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Delete(':id')
   @ApiOperation({ summary: 'Deleta um usuário' })
   @ApiParam({ name: 'id', type: String })

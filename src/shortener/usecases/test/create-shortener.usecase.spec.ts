@@ -51,7 +51,6 @@ describe('CreateShortUrlUseCase', () => {
     expect(repo.createShortUrl).toHaveBeenCalledWith({
       original_url: dto.originalUrl,
       short_code: 'abc123',
-      short_url: dto.shortUrl,
       user
     });
   });
@@ -70,7 +69,6 @@ describe('CreateShortUrlUseCase', () => {
     expect(repo.createShortUrl).toHaveBeenCalledWith({
       original_url: dto.originalUrl,
       short_code: 'abc123',
-      short_url: dto.shortUrl,
       user: undefined
     });
   });
@@ -85,8 +83,7 @@ describe('CreateShortUrlUseCase', () => {
     expect(repo.createShortUrl).toHaveBeenCalledWith(
       expect.objectContaining({
         original_url: dto.originalUrl,
-        short_code: expect.any(String),
-        short_url: undefined
+        short_code: expect.any(String)
       })
     );
   });

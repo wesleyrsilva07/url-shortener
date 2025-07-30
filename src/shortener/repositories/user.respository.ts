@@ -41,7 +41,7 @@ export class TypeOrmUserRepository implements IUserRepository {
   }
 
   async delete(id: string) {
-    const result = await this.repo.delete(id);
+    const result = await this.repo.softDelete(id);
     return !!result.affected;
   }
 }

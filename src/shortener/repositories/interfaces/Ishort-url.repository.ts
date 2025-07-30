@@ -1,8 +1,9 @@
+import { ShortUrlSummaryDto } from 'src/shortener/dtos/short-url-summary.dto';
 import { ShortUrl } from '../../entities/short-url.entity';
 
 export interface IShortUrlRepository {
   createShortUrl(data: Partial<ShortUrl>): Promise<ShortUrl>;
-  findByUserId(userId: string): Promise<ShortUrl[]>;
+  findByUserId(userId: string): Promise<ShortUrlSummaryDto[]>;
   softDeleteById(id: string, userId: string): Promise<boolean>;
   updateSourceUrl(
     id: string,

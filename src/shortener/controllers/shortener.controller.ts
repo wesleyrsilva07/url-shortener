@@ -12,15 +12,17 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateShortUrlUseCase } from '../usecases/create-shortener.usecase';
-import { ShortUrl } from '../entities/short-url.entity';
 import { ShortenUrlInputDto } from '../dtos/shorten-url-input.dto';
 import { OptionalJwtAuthGuard } from '../guards/optional-jwt-auth.guard';
 import { UrlErrorMessages } from '../errors/url-error-messages.enum';
+import { ShortUrlSummaryDto } from '../dtos/short-url-summary.dto';
+
+@ApiBearerAuth('JWT-auth')
 @Controller()
 export class URLShortener {
   constructor(private readonly createShortenerUseCase: CreateShortUrlUseCase) {}
 
-  @ApiBearerAuth()
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Devolve uma url encurtada a partir de uma URL original.'
   })
@@ -33,13 +35,12 @@ export class URLShortener {
   ): Promise<ShortenUrlResponseDto> {
     const userId = req.user?.id || null;
 
-    // Gera short_code
     const tempShortCode = this.createShortenerUseCase.generateShortCode();
     const protocol = req.protocol;
     const host = req.get('host');
     const shortUrl = `${protocol}://${host}/${tempShortCode}`;
 
-    const shortUrlEntity: ShortUrl = await this.createShortenerUseCase.execute({
+    await this.createShortenerUseCase.execute({
       originalUrl: body.url,
       userId,
       shortUrl
@@ -49,17 +50,17 @@ export class URLShortener {
   }
 
   @Get()
-  @ApiBearerAuth()
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Retorna uma lista URLs encurtadas do usuário autenticado'
   })
   @UseGuards(OptionalJwtAuthGuard)
-  async listShortenedUrls(@Req() req): Promise<Omit<ShortUrl, 'user'>[]> {
+  async listShortenedUrls(@Req() req): Promise<ShortUrlSummaryDto[]> {
     return await this.createShortenerUseCase.findByUserId(req.user.id);
   }
 
   @Delete(':id')
-  @ApiBearerAuth()
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Deleta uma URL encurtada' })
   @UseGuards(OptionalJwtAuthGuard)
   async deleteUrl(@Req() req, @Param('id') id: string): Promise<boolean> {
@@ -67,7 +68,7 @@ export class URLShortener {
   }
 
   @Put(':id')
-  @ApiBearerAuth()
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Atualiza a URL de origem' })
   @UseGuards(OptionalJwtAuthGuard)
   async updateSourceUrl(

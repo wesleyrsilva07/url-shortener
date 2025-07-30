@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ShortUrl } from '../entities/short-url.entity';
+import { ShortUrlSummaryDto } from '../dtos/short-url-summary.dto';
 import { IShortUrlRepository } from './interfaces/Ishort-url.repository';
 
 @Injectable()
@@ -16,8 +17,18 @@ export class TypeOrmShortUrlRepository implements IShortUrlRepository {
     return this.repo.save(entity);
   }
 
-  findByUserId(userId: string): Promise<ShortUrl[]> {
-    return this.repo.find({ where: { user: { id: userId } } });
+  async findByUserId(userId: string): Promise<ShortUrlSummaryDto[]> {
+    const urls = await this.repo.find({
+      where: { user: { id: userId } },
+      select: ['short_code', 'clicks']
+    });
+
+    const domain = process.env.DOMAIN_URL;
+
+    return urls.map(u => ({
+      short_url: `${domain}/${u.short_code}`,
+      clicks: u.clicks
+    }));
   }
 
   async softDeleteById(id: string, userId: string): Promise<boolean> {
