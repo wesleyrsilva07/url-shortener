@@ -1,6 +1,6 @@
-import { AuthType } from '../dtos/auth.output';
+import { AuthType } from '../dtos/auth/auth.output';
 import { AuthUseCase } from '../usecases/auth.usecase';
-import { AuthInput } from '../dtos/auth.input';
+import { AuthInput } from '../dtos/auth/auth.input';
 import { Controller, Post, Body } from '@nestjs/common';
 import { ApiOperation, ApiBody } from '@nestjs/swagger';
 

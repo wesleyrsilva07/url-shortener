@@ -16,15 +16,11 @@ export class UpdateUserInput {
   @IsOptional()
   name?: string;
 
-  @IsEmail()
+  @IsEmail({}, { message: 'O campo E-mail deve ser um email válido.' })
   @IsOptional()
   email?: string;
 
   @IsString()
   @IsOptional()
   password?: string;
-
-  @IsString()
-  @IsOptional()
-  account_type?: string;
 }

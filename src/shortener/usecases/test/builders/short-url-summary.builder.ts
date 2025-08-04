@@ -1,4 +1,4 @@
-import { ShortUrlSummaryDto } from '../../../dtos/short-url-summary.dto';
+import { ShortUrlSummaryDto } from '../../../dtos/shortener/short-url-summary.dto';
 
 export class ShortUrlSummaryBuilder {
   private summary: ShortUrlSummaryDto = {

@@ -17,11 +17,16 @@ import {
   ApiBody,
   ApiBearerAuth
 } from '@nestjs/swagger';
-import { CreateUserInput } from '../dtos/create-user.input';
-import { UpdateUserInput } from '../dtos/update-user.input';
+import { CreateUserInput } from '../dtos/user/create-user.input';
+import { UpdateUserInput } from '../dtos/user/update-user.input';
 import { User } from '../entities/user.entity';
-import { CreateUserOutput } from '../dtos/create-user.output';
+import { CreateUserOutput } from '../dtos/user/create-user.output';
+import {
+  UserIdParamsDto,
+  UserEmailParamsDto
+} from '../dtos/user/user-params.dto';
 import { UserUseCase } from '../usecases/user.usecase';
+import { ApiResponseClass } from '../shared/dtos/api-response.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -48,8 +53,8 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'Usuário encontrado.', type: User })
   @ApiResponse({ status: 404, description: 'Usuário não encontrado.' })
   @HttpCode(HttpStatus.OK)
-  async user(@Param('id') id: string): Promise<User> {
-    return await this.userUseCase.findUserById(id);
+  async user(@Param() params: UserIdParamsDto): Promise<User> {
+    return await this.userUseCase.findUserById(params.id);
   }
 
   @ApiBearerAuth('JWT-auth')
@@ -59,8 +64,8 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'Usuário encontrado.', type: User })
   @ApiResponse({ status: 404, description: 'Usuário não encontrado.' })
   @HttpCode(HttpStatus.OK)
-  async userByEmail(@Param('email') email: string): Promise<User> {
-    return await this.userUseCase.findUserByEmail(email);
+  async userByEmail(@Param() params: UserEmailParamsDto): Promise<User> {
+    return await this.userUseCase.findUserByEmail(params.email);
   }
 
   @Post()
@@ -73,12 +78,15 @@ export class UserController {
   })
   @ApiResponse({ status: 400, description: 'Dados inválidos.' })
   @HttpCode(HttpStatus.CREATED)
-  async createUser(@Body() data: CreateUserInput): Promise<CreateUserOutput> {
+  async createUser(
+    @Body() data: CreateUserInput
+  ): Promise<ApiResponseClass<CreateUserOutput>> {
     const user = await this.userUseCase.createUser(data);
-    return {
-      name: user.name,
-      email: user.email
-    };
+    // return {
+    //   name: user.name,
+    //   email: user.email
+    // };
+    return ApiResponseClass.success({ name: user.name, email: user.email });
   }
 
   @ApiBearerAuth('JWT-auth')
@@ -94,10 +102,10 @@ export class UserController {
   @ApiResponse({ status: 404, description: 'Usuário não encontrado.' })
   @HttpCode(HttpStatus.OK)
   async updateUser(
-    @Param('id') id: string,
+    @Param() params: UserIdParamsDto,
     @Body() data: UpdateUserInput
   ): Promise<User> {
-    return await this.userUseCase.updateUser(id, data);
+    return await this.userUseCase.updateUser(params.id, data);
   }
 
   @ApiBearerAuth('JWT-auth')
@@ -111,7 +119,7 @@ export class UserController {
   })
   @ApiResponse({ status: 404, description: 'Usuário não encontrado.' })
   @HttpCode(HttpStatus.OK)
-  async deleteUser(@Param('id') id: string): Promise<boolean> {
-    return await this.userUseCase.deleteUser(id);
+  async deleteUser(@Param() params: UserIdParamsDto): Promise<boolean> {
+    return await this.userUseCase.deleteUser(params.id);
   }
 }

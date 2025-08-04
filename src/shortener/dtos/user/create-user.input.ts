@@ -15,7 +15,7 @@ export class CreateUserInput {
   name: string;
 
   @ApiProperty({ example: 'joao@email.com' })
-  @IsEmail()
+  @IsEmail({}, { message: 'O campo E-mail deve ser um email válido.' })
   @IsNotEmpty({ message: 'O campo E-mail é obrigatório.' })
   email: string;
 

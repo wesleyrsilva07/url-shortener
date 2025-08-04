@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { AuthController } from '../auth.controller';
 import { AuthUseCase } from '../../usecases/auth.usecase';
-import { AuthInput } from '../../dtos/auth.input';
+import { AuthInput } from '../../dtos/auth/auth.input';
 
 describe('AuthController', () => {
   let controller: AuthController;

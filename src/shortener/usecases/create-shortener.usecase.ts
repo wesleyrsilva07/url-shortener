@@ -1,10 +1,10 @@
-import { CreateUrlDto } from '../dtos/create-url.dto';
+import { CreateUrlDto } from '../dtos/shortener/create-url.dto';
 import { ShortUrl } from '../entities/short-url.entity';
 import { UserUseCase } from './user.usecase';
 import { Inject, Injectable } from '@nestjs/common';
 import { IShortUrlRepository } from '../repositories/interfaces/Ishort-url.repository';
 import { RepositoryName } from '../shared/enums/repositories-name';
-import { ShortUrlSummaryDto } from '../dtos/short-url-summary.dto';
+import { ShortUrlSummaryDto } from '../dtos/shortener/short-url-summary.dto';
 
 @Injectable()
 export class CreateShortUrlUseCase {

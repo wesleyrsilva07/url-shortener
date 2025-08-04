@@ -1,4 +1,4 @@
-import { ShortUrlSummaryDto } from 'src/shortener/dtos/short-url-summary.dto';
+import { ShortUrlSummaryDto } from 'src/shortener/dtos/shortener/short-url-summary.dto';
 import { ShortUrl } from '../../entities/short-url.entity';
 
 export interface IShortUrlRepository {

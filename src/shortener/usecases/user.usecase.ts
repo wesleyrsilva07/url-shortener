@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { User } from '../entities/user.entity';
 import { IUserRepository } from '../repositories/interfaces/Iuser.repository';
-import { UpdateUserInput } from '../dtos/update-user.input';
-import { CreateUserInput } from '../dtos/create-user.input';
+import { UpdateUserInput } from '../dtos/user/update-user.input';
+import { CreateUserInput } from '../dtos/user/create-user.input';
 import { RepositoryName } from '../shared/enums/repositories-name';
 
 @Injectable()

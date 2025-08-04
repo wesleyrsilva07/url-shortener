@@ -3,7 +3,7 @@ import { AuthUseCase } from '../auth.usecase';
 import { UserUseCase } from '../user.usecase';
 import { JwtService } from '@nestjs/jwt';
 import { UnauthorizedException } from '@nestjs/common';
-import { AuthInput } from '../../dtos/auth.input';
+import { AuthInput } from '../../dtos/auth/auth.input';
 import { User } from '../../entities/user.entity';
 import * as bcrypt from 'bcrypt';
 
